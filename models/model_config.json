@@ -1,0 +1,15 @@
+{
+  "decision_threshold": 0.9067568778991699,
+  "best_params": {
+    "n_estimators": 397,
+    "max_depth": 3,
+    "learning_rate": 0.07993347737927162,
+    "subsample": 0.9039924989273324,
+    "colsample_bytree": 0.7560744739330062,
+    "min_child_weight": 1,
+    "scale_pos_weight": 96.53269537480064,
+    "eval_metric": "aucpr",
+    "n_jobs": -1,
+    "random_state": 42
+  }
+}
