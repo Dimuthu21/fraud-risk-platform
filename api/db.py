@@ -24,9 +24,11 @@ connection_url = URL.create(
         "TrustServerCertificate": "no",
     },
 )
-
-engine = create_engine(connection_url)
-
+engine = create_engine(
+    connection_url,
+    pool_pre_ping=True,
+    pool_recycle=280,
+)
 
 def test_connection():
     with engine.connect() as conn:
