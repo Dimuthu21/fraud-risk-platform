@@ -7,3 +7,5 @@ __pycache__/
 mlruns/
 models/*.pkl
 .venv/
+api/.env
+api/venv/
