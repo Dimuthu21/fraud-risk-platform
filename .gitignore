@@ -5,7 +5,6 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 mlruns/
-models/*.pkl
 .venv/
 api/.env
 api/venv/
