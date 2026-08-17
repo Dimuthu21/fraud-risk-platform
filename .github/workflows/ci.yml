@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ODBC driver
+        run: |
+          sudo mkdir -p /etc/crypto-policies/back-ends
+          echo '[hash_algorithms]' | sudo tee /etc/crypto-policies/back-ends/apt-sequoia.config
+          echo 'sha1 = "always"' | sudo tee -a /etc/crypto-policies/back-ends/apt-sequoia.config
+          curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 unixodbc-dev
+          sudo rm -f /etc/crypto-policies/back-ends/apt-sequoia.config
+
+      - name: Install dependencies
+        run: |
+          pip install -r api/requirements.txt
+          pip install pytest httpx ruff
+
+      - name: Lint
+        run: ruff check api/ src/ --exit-zero
+
+      - name: Run tests
+        env:
+          DB_SERVER: ${{ secrets.DB_SERVER }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: pytest tests/ -v
